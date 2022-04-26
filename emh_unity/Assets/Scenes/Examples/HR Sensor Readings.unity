@@ -336,10 +336,6 @@ MonoBehaviour:
   a1Value: 0
   a2Value: 0
   a3Value: 0
-  a4Value: 0
-  a5Value: 0
-  a6Value: 0
-  a7Value: 0
 --- !u!4 &1096810588
 Transform:
   m_ObjectHideFlags: 0
