@@ -20,7 +20,7 @@ public class analogPinValues : MonoBehaviour
     */
 
 
-    public string serialPort = "/dev/tty.usbserial-1420";
+    public string serialPort = "COM5";
     public int baudRate = 115200; // Leave this as 115200
     private SerialPort arduinoNanoStream;
 
