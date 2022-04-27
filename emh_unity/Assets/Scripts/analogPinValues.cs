@@ -68,7 +68,7 @@ public class analogPinValues : MonoBehaviour
 
         // Configure our serial port variable
         arduinoNanoStream = new(serialPort, baudRate);
-        arduinoNanoStream.ReadTimeout = 2000;
+        arduinoNanoStream.ReadTimeout = 50;
 
         // Open up the serial port for incoming data stream
         arduinoNanoStream.Open();
