@@ -110,7 +110,7 @@ void loop() {
       Serial.println();
     }
     
-    delay(20);
+    delay(10);
     }
   }
 }
