@@ -19,12 +19,9 @@ public class analogPinValues : MonoBehaviour
      * Windows serial port names: "COM7" 
     */
 
-    [Tooltip("Arduino Port")]
+
     public string serialPort = "/dev/tty.usbserial-1420";
-
-    [Tooltip("Arduino Serial Baudrate")]
     public int baudRate = 115200; // Leave this as 115200
-
     private SerialPort arduinoNanoStream;
 
 
@@ -71,11 +68,13 @@ public class analogPinValues : MonoBehaviour
 
         // Configure our serial port variable
         arduinoNanoStream = new(serialPort, baudRate);
-        arduinoNanoStream.ReadTimeout = 100;
+        arduinoNanoStream.ReadTimeout = 200;
 
         // Open up the serial port for incoming data stream
         arduinoNanoStream.Open();
+        Debug.Log("Opened Serial Port: " + serialPort);
     }
+
 
     // Update is called once per frame
     void Update()
@@ -98,101 +97,106 @@ public class analogPinValues : MonoBehaviour
         //}
     }
 
+
+    // A method to filter and parse an incoming serial data stream, and set public variables
     void OnMessageArrived(string arduinoNanoString)
     {
-        ////Debug.Log("Message received");
-        ////Debug.Log(arduinoNanoString[2]);
-        //if (arduinoNanoString[2].Equals('0'))
-        //{
-        //    Debug.Log(arduinoNanoString);
-        //}
-        // A switch/case statement which looks for "n" (the analog pin number), which is the 3rd (starting from 0) character in the line
-        switch (arduinoNanoString[2])
+        if (arduinoNanoStream.ReadLine() != null)
         {
-            // If n = 0 (e.g. /a0/x)
-            case '0':
-                // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                // Use the comma to split this line into a list of three values (Rate, Interval, Pulse)
-                arduinoNanoList = arduinoNanoString.Split(',');
-                // Set our Heart Rate variable from line 29 equal to the first variable in this list
-                heartRate = int.Parse(arduinoNanoList[0]);
-                // Set our Heart Interval variable from line 30 equal to the second variable in this list
-                heartInterval = int.Parse(arduinoNanoList[1]);
-                // Set our Heart Pulse variable from line 31 equal to a scaled version of the third variable in this list
-                heartPulse = Mathf.Round(Mathfs.RemapClamped(0f, 600f, 0f, 1f, float.Parse(arduinoNanoList[2])));
-                // Set our Pulse state variable
-                pulseState = heartPulse > 0.99f;
-                break;
+            // A switch/case statement which looks for "n" (the analog pin number), which is the 3rd (starting from 0) character in the line
+            switch (arduinoNanoString[2])
+            {
+                // If n = 0 (e.g. /a0/x)
+                case '0':
+                    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    // Use the comma to split this line into a list of three values (Rate, Interval, Pulse)
+                    arduinoNanoList = arduinoNanoString.Split(',');
+                    // Set our Heart Rate variable from line 34 equal to the first variable in this list
+                    heartRate = int.Parse(arduinoNanoList[0]);
+                    // Set our Heart Interval variable from line 35 equal to the second variable in this list
+                    heartInterval = int.Parse(arduinoNanoList[1]);
+                    // Set our Heart Pulse variable from line 36 equal to a scaled version of the third variable in this list
+                    heartPulse = Mathf.Round(Mathfs.RemapClamped(0f, 600f, 0f, 1f, float.Parse(arduinoNanoList[2])));
+                    // Set our Pulse state variable on line 37 true if the Pulse goes over 0.99
+                    pulseState = heartPulse > 0.99f;
+                    // Move to the next case
+                    break;
+
+                // If n = 1 (e.g. /a1/x)
+                case '1':
+                    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    a1Value = float.Parse(arduinoNanoString);
+                    break;
+
+                // If n = 2 (e.g. /a2/x)
+                case '2':
+                    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    a2Value = float.Parse(arduinoNanoString);
+                    break;
+
+                // If n = 3 (e.g. /a3/x)
+                case '3':
+                    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    a3Value = float.Parse(arduinoNanoString);
+                    break;
 
 
 
-            // If n = 1 (e.g. /a1/x)
-            case '1':
-                // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                a1Value = float.Parse(arduinoNanoString);
-                break;
-
-            // If n = 2 (e.g. /a2/x)
-            case '2':
-                // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                a2Value = float.Parse(arduinoNanoString);
-                break;
-
-            // If n = 3 (e.g. /a3/x)
-            case '3':
-                // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                a3Value = float.Parse(arduinoNanoString);
-                break;
 
 
 
 
 
 
+                    //    These have been commented, if you use more than 4 sensors (?!? !? !!!!) just uncomment them :) 
 
+                    //// If n = 4 (e.g. /a4/x)
+                    //case '4':
+                    //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    //    a4Value = float.Parse(arduinoNanoString);
+                    //    break;
 
+                    //// If n = 5 (e.g. /a5/x)    
+                    //case '5':
+                    //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    //    a5Value = float.Parse(arduinoNanoString);
+                    //    break;
 
-                // These have been commented, if you use more than 4 sensors (?!?!?!!!!) just uncomment them :) 
+                    //// If n = 6 (e.g. /a6/x)
+                    //case '6':
+                    //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    //    a6Value = float.Parse(arduinoNanoString);
+                    //    break;
 
-                //// If n = 4 (e.g. /a4/x)
-                //case '4':
-                //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                //    a4Value = float.Parse(arduinoNanoString);
-                //    break;
+                    //// If n = 7 (e.g. /a7/x)
+                    //case '7':
+                    //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
+                    //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
+                    //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
+                    //    a7Value = float.Parse(arduinoNanoString);
+                    //    break;
 
-                //// If n = 5 (e.g. /a5/x)    
-                //case '5':
-                //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                //    a5Value = float.Parse(arduinoNanoString);
-                //    break;
-
-                //// If n = 6 (e.g. /a6/x)
-                //case '6':
-                //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                //    a6Value = float.Parse(arduinoNanoString);
-                //    break;
-
-                //// If n = 7 (e.g. /a7/x)
-                //case '7':
-                //    // Remove the first 4 characters of the line (so that we're just left with the value of the pin)
-                //    arduinoNanoString = arduinoNanoString.Remove(0, 4);
-                //    // Convert the rest of this line into a decimal number, and set the variable visible in the inspector equal to the value from the data stream
-                //    a7Value = float.Parse(arduinoNanoString);
-                //    break;
-
+            }
         }
+    }
+
+    // Close the serial port when coming out of Game Mode
+    private void OnApplicationQuit()
+    {
+        arduinoNanoStream.Close();
+        Debug.Log("Closed Serial Port: " + serialPort);
     }
 }
