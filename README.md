@@ -1,4 +1,4 @@
-# Embodiment Hackathon @ Sussex || 
+# Embodiment Hackathon @ Sussex
 **April 30th - May 1st 2022**: A two day workshop working with wearable and interoceptive sensing technologies in virtual environments
 
 ---
