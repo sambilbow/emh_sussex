@@ -108,7 +108,9 @@ void loop() {
       Serial.print("/");
       Serial.print(sensorReading);
       Serial.println();
+      
     }
+    delay(20);
     }
   }
 }
