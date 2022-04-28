@@ -1,14 +1,14 @@
-/* 
- *  Analog Input to Unity (Serial)
- *  for use with Arduino Nano,and Seeed
- *  Grove Ear-Clip Heart Rate Sensor.
- *
- *  Sends Analog Inputs via Serial
- *
- *  Sam Bilbow (c) 2022
- *  for the Embodiment Hackathon
- *  at the University of Sussex
- *  www.sambilbow.com 
+/*
+    Analog Input to Unity (Serial)
+    for use with Arduino Nano,and Seeed
+    Grove Ear-Clip Heart Rate Sensor.
+
+    Sends Analog Inputs via Serial
+
+    Sam Bilbow (c) 2022
+    for the Embodiment Hackathon
+    at the University of Sussex
+    www.sambilbow.com
 */
 
 
@@ -43,11 +43,11 @@ const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
 // Setup - Initialise Serial / begin Pulse Sensor readings
 // ----------
 void setup() {
-   // Open serial communications and wait for port to open before carrying on
-   Serial.begin(115200);
-   while (!Serial) {
-     ;
-   }
+  // Open serial communications and wait for port to open before carrying on
+  Serial.begin(250000);
+  while (!Serial) {
+    ;
+  }
 
   // Configure the PulseSensor manager.
   pulseSensor.analogInput(PULSE_INPUT);
@@ -79,38 +79,40 @@ void setup() {
 // Loop - Report samples from Heart Rate Sensor, send 3 (heart rate, IBI, pulse) via serial as well as the rest of the analog pins
 // ----------
 void loop() {
-  /* See if a sample is ready from the PulseSensor
-    Since USE_INTERRUPTS is false (Arduino ESP32 limitation), this call to sawNewSample()
-    will, if enough time has passed, read and process a
-    sample (analog voltage) from the PulseSensor. */
-  if (pulseSensor.sawNewSample()) {
-    // Every so often, send the latest sample to the serial monitor
-    if (--samplesUntilReport == (byte) 0) {
-      samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-      //pulseSensor.outputSample();
-      // At about the beginning of every heartbeat, report the heart rate and inter-beat-interval.
-      if (pulseSensor.sawStartOfBeat()) {
-        //pulseSensor.outputBeat();
-      }
-    // Print Heart Rate Sensor data to serial with /a0/ prepend 
-    Serial.print("/a0/");
-    Serial.print(pulseSensor.getBeatsPerMinute());
-    Serial.print(",");
-    Serial.print(pulseSensor.getInterBeatIntervalMs());
-    Serial.print(",");
-    Serial.println(pulseSensor.getLatestSample());
+  delay(30);
 
-    // Print analog inputs 1 through 7 to serial with /a(n)/ prepend
-    for (int analogChannel = 1; analogChannel < 8; analogChannel++) {
-      int sensorReading = analogRead(analogChannel);
-      Serial.print("/a");
-      Serial.print(analogChannel);
-      Serial.print("/");
-      Serial.print(sensorReading);
-      Serial.println();
-    }
-    
-    delay(10);
-    }
-  }
+  // Print Heart Rate Sensor data to serial with /a0/ prepend
+  //Serial.print("/a0/");
+  Serial.print(pulseSensor.getBeatsPerMinute());
+  Serial.print(",");
+  Serial.print(pulseSensor.getInterBeatIntervalMs());
+  Serial.print(",");
+  Serial.print(pulseSensor.getLatestSample());
+  Serial.print(",");
+  Serial.print(analogRead(1));
+  Serial.print(",");
+  Serial.print(analogRead(2));
+  Serial.print(",");
+  Serial.print(analogRead(3));
+  Serial.print(",");
+  Serial.print(analogRead(4));
+  Serial.print(",");
+  Serial.print(analogRead(5));
+  Serial.print(",");
+  Serial.print(analogRead(6));
+  Serial.print(",");
+  Serial.println(analogRead(7));
+
+  // Print analog inputs 1 through 7 to serial with /a(n)/ prepend
+//  for (int analogChannel = 1; analogChannel < 8; analogChannel++) {
+//    int sensorReading = analogRead(analogChannel);
+//    Serial.print("/a");
+//    Serial.print(analogChannel);
+//    Serial.print("/");
+//    Serial.print(sensorReading);
+//    Serial.println();
+//  }
+
+  //delay(30);
+
 }
