@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using UnityEngine;
 using Freya;
+using UnityEngine.Events;
 
 public class analogPinValues : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class analogPinValues : MonoBehaviour
     public int heartInterval;
     public float heartPulse;
     public bool pulseState;
+    public UnityEvent _onPulse;
+    public UnityEvent _offPulse;
 
     // Display the variables holding our analog pin (1 - 7) data. Uncomment as needed 
     [Header("Analog Pins (A1, A2...)")]
@@ -82,6 +85,15 @@ public class analogPinValues : MonoBehaviour
 
             // Set our Pulse state variable on line 37 true if the Pulse goes over 0.99
             pulseState = heartPulse > 0.99f;
+
+            if (pulseState)
+            {
+                _onPulse.Invoke();
+            }
+            else
+            {
+                _offPulse.Invoke();
+            }
 
             a1Value = int.Parse(arduinoNanoList[3]);
             a2Value = int.Parse(arduinoNanoList[4]);

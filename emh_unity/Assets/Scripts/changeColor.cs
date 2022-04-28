@@ -15,15 +15,11 @@ public class changeColor : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void SetColor(string color)
     {
-        if (analogPinValues.pulseState == true)
-        {
-            rendererComponent.material.color = new Color(1f, 0f, 0f);
-        }
-        else if (analogPinValues.pulseState == false)
-        {
-            rendererComponent.material.color = new Color(1f, 1f, 1f);
-        }
+        
+        Debug.Log("Pulse Detected, Changing Color");
+        ColorUtility.TryParseHtmlString(color, out Color convertedColor);
+        rendererComponent.material.color = convertedColor;
     }
 }
