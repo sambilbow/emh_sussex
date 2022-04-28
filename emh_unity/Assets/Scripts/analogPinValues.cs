@@ -91,8 +91,6 @@ public class analogPinValues : MonoBehaviour
             //a6Value = int.Parse(arduinoNanoList[8]);
             //a7Value = int.Parse(arduinoNanoList[9]);
 
-            transform.GetComponent<AudioSource>().volume = heartPulse;
-
         }
 
         // If there is an error, catch it here and display it in the Console as a message.
