@@ -51,7 +51,7 @@ public class analogPinValues : MonoBehaviour
          */
 
         // Configure our serial port variable with a port name and speed.
-        arduinoNanoStream = new("/dev/tty.usbserial-1440", 250000);
+        arduinoNanoStream = new("COM7", 250000);
 
         // Amount of time to wait after no data comes before timing out and telling us
         arduinoNanoStream.ReadTimeout = 100;
