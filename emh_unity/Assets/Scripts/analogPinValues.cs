@@ -55,7 +55,7 @@ public class analogPinValues : MonoBehaviour
          */
 
         // Configure our serial port variable with a port name and speed.
-        arduinoNanoStream = new("COM7", 250000);
+        arduinoNanoStream = new("/dev/tty.usbserial-1420", 250000);
 
         // Amount of time to wait after no data comes before timing out and telling us
         arduinoNanoStream.ReadTimeout = 100;
@@ -91,8 +91,8 @@ public class analogPinValues : MonoBehaviour
                 pulseState = true;
                 _onPulse.Invoke();
             }
-            
-            if (!updatePulse && heartPulse == 0f) 
+
+            if (!updatePulse && heartPulse == 0f)
             {
                 pulseState = false;
                 _offPulse.Invoke();
@@ -120,10 +120,10 @@ public class analogPinValues : MonoBehaviour
     public void SetPulseState()
     {
         if (pulseState)
-            {
-                Debug.Log("pre invoke on");
-                _onPulse.Invoke();
-            }
+        {
+            Debug.Log("pre invoke on");
+            _onPulse.Invoke();
+        }
         else
         {
             Debug.Log("pre invoke off");
