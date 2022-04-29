@@ -18,7 +18,7 @@ public class changeColor : MonoBehaviour
     public void SetColor(string color)
     {
         
-        Debug.Log("Pulse Detected, Changing Color");
+        //Debug.Log("Pulse Detected, Changing Color");
         ColorUtility.TryParseHtmlString(color, out Color convertedColor);
         rendererComponent.material.color = convertedColor;
     }

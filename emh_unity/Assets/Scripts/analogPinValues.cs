@@ -23,6 +23,7 @@ public class analogPinValues : MonoBehaviour
     public bool pulseState;
     public UnityEvent _onPulse;
     public UnityEvent _offPulse;
+    private bool updatePulse = true;
 
     // Display the variables holding our analog pin (1 - 7) data. Uncomment as needed 
     [Header("Analog Pins (A1, A2...)")]
@@ -83,17 +84,21 @@ public class analogPinValues : MonoBehaviour
             // Set our Heart Pulse variable from line 36 equal to a scaled version of the third variable in this list
             heartPulse = Mathf.Round(Mathfs.RemapClamped(0f, 600f, 0f, 1f, float.Parse(arduinoNanoList[2])));
 
-            // Set our Pulse state variable on line 37 true if the Pulse goes over 0.99
-            pulseState = heartPulse > 0.99f;
-
-            if (pulseState)
+            // Set our Pulse state variable on line 37 true if the Pulse = 1. Check if updatePulse is true so that this doesn't run every frame, only when Pulse crosses the 0-1 threshold.
+            if (updatePulse && heartPulse == 1f)
             {
+                updatePulse = false;
+                pulseState = true;
                 _onPulse.Invoke();
             }
-            else
+            
+            if (!updatePulse && heartPulse == 0f) 
             {
+                pulseState = false;
                 _offPulse.Invoke();
+                updatePulse = true;
             }
+
 
             a1Value = int.Parse(arduinoNanoList[3]);
             a2Value = int.Parse(arduinoNanoList[4]);
@@ -109,6 +114,20 @@ public class analogPinValues : MonoBehaviour
         catch (System.Exception error)
         {
             Debug.Log(error.Message);
+        }
+    }
+
+    public void SetPulseState()
+    {
+        if (pulseState)
+            {
+                Debug.Log("pre invoke on");
+                _onPulse.Invoke();
+            }
+        else
+        {
+            Debug.Log("pre invoke off");
+            _offPulse.Invoke();
         }
     }
 
